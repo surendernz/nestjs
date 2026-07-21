@@ -17,10 +17,7 @@ export class PropertyController {
         return `This action returns property with ID: ${id}`;
     }
     @Post('create')
-    @UsePipes(new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true
-    }))
+    @UsePipes()
     @HttpCode(202)
     create(@Body() body: CreatePropertyDto): string {
         return 'This action adds a new property with data: ' + JSON.stringify(body);
@@ -29,21 +26,13 @@ export class PropertyController {
     @Post('create2')
     // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     @HttpCode(202)
-    create2(@Body(new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        groups: ['create']
-    })) body: CreatePropertyDto): string {
+    create2(@Body() body: CreatePropertyDto): string {
         return 'This action adds a new property with data: ' + JSON.stringify(body);
     }
 
     @Patch(':id')
     update(@Param('id', ParseIntPipe) id,
-        @Body(new ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-            groups: ['update']
-        })) body: CreatePropertyDto): string {
+        @Body() body: CreatePropertyDto): string {
         return 'This action updates a property with data: ' + JSON.stringify(body);
     }
 
