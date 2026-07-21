@@ -1,9 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { PropertyController } from './property.controller';
 import { PropertyService } from './property.service';
 
 @Module({
   controllers: [PropertyController],
-  providers: [PropertyService]
+  providers: [PropertyService,
+    {
+      provide: 'APP_PIPE',
+      useValue: new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true
+      })
+    }
+  ]
 })
-export class PropertyModule {}
+export class PropertyModule { }
