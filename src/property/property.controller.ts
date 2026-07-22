@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, Headers } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
@@ -61,5 +61,14 @@ export class PropertyController {
     update3(@Param('id') id,
         @Body(new ZodValidationPipe(createPropertyZodSchema)) body: CreatePropertyZodDto): string {
         return 'This action updates a property with data: ' + JSON.stringify(body);
+    }
+
+    // headers
+    @Patch('headers/:id')
+    update4(@Param('id', ParseIntPipe) id,
+        @Body() body: CreatePropertyDto,
+        @Headers() headers): string {
+        return 'This action updates a property with data: ' + JSON.stringify(body) +
+            ' and headers: ' + JSON.stringify(headers);
     }
 }
