@@ -2,6 +2,9 @@ import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Pa
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
+import { ZodValidationPipe } from './pipes/zodValidationPipe';
+import type { CreatePropertyZodDto } from './dto/createPropertyZod.dto';
+import { createPropertyZodSchema } from './dto/createPropertyZod.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -50,6 +53,13 @@ export class PropertyController {
     @Patch('custom/:id')
     update2(@Param('id', ParseIdPipe) id,
         @Body() body: CreatePropertyDto): string {
+        return 'This action updates a property with data: ' + JSON.stringify(body);
+    }
+
+    //ZOD validation
+    @Patch('zod/:id')
+    update3(@Param('id') id,
+        @Body(new ZodValidationPipe(createPropertyZodSchema)) body: CreatePropertyZodDto): string {
         return 'This action updates a property with data: ' + JSON.stringify(body);
     }
 }
