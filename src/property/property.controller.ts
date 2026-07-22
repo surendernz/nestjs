@@ -1,10 +1,12 @@
-import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, Headers } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import type { CreatePropertyZodDto } from './dto/createPropertyZod.dto';
 import { createPropertyZodSchema } from './dto/createPropertyZod.dto';
+import { HeadersDto } from './dto/headers.dto';
+import { RequestHeader } from './pipes/request-headers';
 
 @Controller('property')
 export class PropertyController {
@@ -63,12 +65,13 @@ export class PropertyController {
         return 'This action updates a property with data: ' + JSON.stringify(body);
     }
 
-    // headers
+    // headers validation
     @Patch('headers/:id')
     update4(@Param('id', ParseIntPipe) id,
         @Body() body: CreatePropertyDto,
-        @Headers() headers): string {
-        return 'This action updates a property with data: ' + JSON.stringify(body) +
-            ' and headers: ' + JSON.stringify(headers);
+        @RequestHeader(new ValidationPipe({ validateCustomDecorators: true }))
+        header: HeadersDto) {
+        return header;
+
     }
 }
