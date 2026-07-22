@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
+import { IdParamDto } from './dto/idParam.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -15,6 +16,15 @@ export class PropertyController {
         console.log('sort', sort);
         console.log('typeof sort', typeof sort);
         return `This action returns property with ID: ${id}`;
+    }
+    @Get('test/:id')
+    findOne2(@Param() id: IdParamDto,
+        @Query('sort', ParseBoolPipe) sort): string {
+        console.log('id', id);
+        console.log('typeof id', typeof id);
+        console.log('sort', sort);
+        console.log('typeof sort', typeof sort);
+        return `This action returns property with ID: ${id.id}`;
     }
     @Post('create')
     @UsePipes()
