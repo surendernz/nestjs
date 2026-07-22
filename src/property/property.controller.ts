@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { IdParamDto } from './dto/idParam.dto';
+import { ParseIdPipe } from './pipes/parseIdpipe';
 
 @Controller('property')
 export class PropertyController {
@@ -45,5 +46,10 @@ export class PropertyController {
         @Body() body: CreatePropertyDto): string {
         return 'This action updates a property with data: ' + JSON.stringify(body);
     }
-
+    //customer transform pipe
+    @Patch('custom/:id')
+    update2(@Param('id', ParseIdPipe) id,
+        @Body() body: CreatePropertyDto): string {
+        return 'This action updates a property with data: ' + JSON.stringify(body);
+    }
 }
