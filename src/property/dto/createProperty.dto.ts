@@ -1,5 +1,7 @@
 import { IsInt, IsNumber, IsString, Length } from "class-validator";
 
+// this matches the entity class, so that we can use it to validate 
+// the data coming from the client
 export class CreatePropertyDto {
     @IsString()
     @Length(3, 50)
@@ -14,4 +16,9 @@ export class CreatePropertyDto {
     description!: string;
     @IsInt()
     price!: number;
+    @IsString()
+    location!: string;
+    @IsString()
+    @Length(3, 50)
+    owner!: string;
 }
