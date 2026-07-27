@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
@@ -8,6 +8,8 @@ import { createPropertyZodSchema } from './dto/createPropertyZod.dto';
 import { HeadersDto } from './dto/headers.dto';
 import { RequestHeader } from './pipes/request-headers';
 import { PropertyService } from './property.service';
+import { Property } from 'src/entities/property.entity';
+import { UpdatePropertyDto } from './dto/updateProperty.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -31,17 +33,14 @@ export class PropertyController {
     //     this.propertyService = new PropertyService();
     // }
     @Get('all')
-    findAll(): string {
-        return this.propertyService.findAll();
+    async findAll(): Promise<Property[]> {
+        return await this.propertyService.findAll();
     }
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id,
-        @Query('sort', ParseBoolPipe) sort): string {
+    async findOne(@Param('id', ParseIntPipe) id): Promise<Property | null> {
         console.log('id', id);
         console.log('typeof id', typeof id);
-        console.log('sort', sort);
-        console.log('typeof sort', typeof sort);
-        return this.propertyService.findOne(id);
+        return await this.propertyService.findOne(id);
     }
     @Get('test/:id')
     findOne2(@Param() id: IdParamDto,
@@ -55,43 +54,28 @@ export class PropertyController {
     @Post('create')
     @UsePipes()
     @HttpCode(202)
-    create(@Body() body: CreatePropertyDto): string {
-        return this.propertyService.create(body);
-    }
-
-    @Post('create2')
-    // @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-    @HttpCode(202)
-    create2(@Body() body: CreatePropertyDto): string {
-        return this.propertyService.create(body);
+    async create(@Body() dto: CreatePropertyDto): Promise<{ message: string, data: Property }> {
+        console.log('###### createPropertyDto', dto);
+        const saved = await this.propertyService.create(dto);
+        return { message: 'created', data: saved };
     }
 
     @Patch(':id')
-    update(@Param('id', ParseIntPipe) id,
-        @Body() body: CreatePropertyDto): string {
-        return this.propertyService.update(id, body);
+    async update(@Param('id', ParseIntPipe) id,
+        @Body() body: UpdatePropertyDto): Promise<any> {
+        const updated = await this.propertyService.update(id, body);
+        // return { message: 'updated', data: updated };
+        return updated;
     }
     //customer transform pipe
     @Patch('custom/:id')
     update2(@Param('id', ParseIdPipe) id,
-        @Body() body: CreatePropertyDto): string {
+        @Body() body: UpdatePropertyDto): string {
         return 'This action updates a property with data: ' + JSON.stringify(body);
     }
 
-    //ZOD validation
-    @Patch('zod/:id')
-    update3(@Param('id') id,
-        @Body(new ZodValidationPipe(createPropertyZodSchema)) body: CreatePropertyZodDto): string {
-        return 'This action updates a property with data: ' + JSON.stringify(body);
-    }
-
-    // headers validation
-    @Patch('headers/:id')
-    update4(@Param('id', ParseIntPipe) id,
-        @Body() body: CreatePropertyDto,
-        @RequestHeader(new ValidationPipe({ validateCustomDecorators: true }))
-        header: HeadersDto) {
-        return header;
-
+    @Delete(':id')
+    async delete(@Param('id', ParseIntPipe) id): Promise<any> {
+        return await this.propertyService.delete(id);
     }
 }
