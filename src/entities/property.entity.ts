@@ -22,6 +22,7 @@ export class Property {
     // inverse side property is the property in PropertyFeature that points back to Property, 
     // which is 'property' in this case. Allows for bidirectional relationship management.
     @OneToOne(() => PropertyFeature, (propertyFeature) => propertyFeature.property, { cascade: true })
+    @JoinColumn({ name: 'propertyFeatureId' }) // this creates the foreign key column in the Property table
     propertyFeature!: PropertyFeature
 
     @ManyToOne(() => User, (user) => user.properties)
